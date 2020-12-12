@@ -13,16 +13,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Test
+//Route::resource('rest', 'RestTestController')->names('restTest');
+
+// Main
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Blog/Posts
 Route::group(['namespace' => 'Blog', 'prefix' => 'blog'], function() {
     Route::resource('posts', 'PostController')->names('blog.posts');
 });
 
-Route::resource('rest', 'RestTestController')->names('restTest');
-
+// Auth
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
+
+// Blog/Admin
+$groupConfig = [
+    'namespace' => 'Blog\Admin',
+    'prefix' => 'admin/blog'
+];
+Route::group($groupConfig, function() {
+    $methods = ['index', 'edit', 'store', 'create', 'update'];
+    Route::resource('categories', 'CategoryController')
+        ->only($methods)
+        ->names('blog.admin.categories');
+});
